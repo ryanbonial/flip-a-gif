@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GIF to Flipbook</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: #4a5568;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #718096;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        font-style: italic;
+      }
+
+      .upload-section {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 30px;
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        border-radius: 15px;
+        border: 2px dashed #cbd5e0;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .upload-section:hover {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #f0f4ff 0%, #e6f3ff 100%);
+      }
+
+      .upload-section.dragover {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #e6f3ff 0%, #d1e7ff 100%);
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+      }
+
+      .upload-section .drag-text {
+        font-size: 1.1rem;
+        color: #718096;
+        margin-bottom: 20px;
+      }
+
+      .upload-section .drag-text strong {
+        color: #667eea;
+        font-weight: 600;
+      }
+
+      label {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 15px;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .file-input-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+
+      .file-input-label {
+        display: inline-block;
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .file-input-label:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      }
+
+      .file-name {
+        margin-top: 15px;
+        font-size: 0.9rem;
+        color: #718096;
+        font-style: italic;
+      }
+
+      .error-message {
+        margin-top: 15px;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+        border: 1px solid #fc8181;
+        border-radius: 10px;
+        color: #c53030;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-align: center;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #printBtn {
+        display: none;
+        margin: 20px auto;
+        padding: 15px 40px;
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+      }
+
+      #printBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(72, 187, 120, 0.6);
+      }
+
+      #frames {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 0;
+        margin-left: 30px;
+      }
+
+      #frames img {
+        border: 1px dashed #999;
+        border-left: none;
+        border-bottom: none;
+        margin: 0;
+        padding-left: 30px;
+        width: 200px;
+        height: auto;
+        transition: transform 0.2s ease;
+      }
+
+      #frames img:hover {
+        transform: scale(1.02);
+      }
+
+      /* Print styles */
+      @media print {
+        body {
+          margin: 0;
+          padding: 0;
+          background: white;
+        }
+        .container {
+          box-shadow: none;
+          border-radius: 0;
+          padding: 0;
+        }
+        h1,
+        .subtitle,
+        .upload-section,
+        #printBtn,
+        div[style*="text-align: center"] {
+          display: none;
+        }
+        #frames {
+          margin-left: 30px;
+          gap: 0;
+        }
+        #frames img {
+          border: 1px dashed #999;
+          border-left: none;
+          border-bottom: none;
+          margin: 0;
+          padding-left: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎬 → 📕 GIF to Flipbook</h1>
+      <p class="subtitle">
+        Transform your animated GIFs into printable flipbooks!
+      </p>
+
+      <div class="upload-section" id="uploadSection">
+        <label for="gifInput">Choose your GIF file:</label>
+        <div class="file-input-wrapper">
+          <input type="file" id="gifInput" accept="image/gif" />
+          <label for="gifInput" class="file-input-label">📁 Select GIF</label>
+        </div>
+        <div class="file-name" id="fileName"></div>
+        <div
+          id="errorMessage"
+          class="error-message"
+          style="display: none"
+        ></div>
+      </div>
+
+      <div style="text-align: center">
+        <button
+          id="printBtn"
+          style="
+            display: none;
+            margin: 20px auto;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+          "
+        >
+          🖨️ Print Flipbook
+        </button>
+        <div
+          id="printInstructions"
+          style="
+            display: none;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #718096;
+            line-height: 1.4;
+          "
+        >
+          💡 <strong>Printing Tips:</strong> Use landscape orientation and set
+          margins to "None" for best results
+        </div>
+      </div>
+
+      <div id="frames"></div>
+    </div>
+
+    <script type="module">
+      import { parseGIF, decompressFrames } from "gifuct-js";
+
+      document
+        .getElementById("gifInput")
+        .addEventListener("change", async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          // Validate file type
+          if (!file.type.startsWith("image/gif")) {
+            showError(
+              "❌ Please select a GIF file only. Other image formats are not supported."
+            );
+            e.target.value = ""; // Clear the input
+            document.getElementById("fileName").textContent = "";
+            return;
+          }
+
+          // Validate file size (optional - 10MB limit)
+          if (file.size > 10 * 1024 * 1024) {
+            showError(
+              "❌ File is too large. Please select a GIF file smaller than 10MB."
+            );
+            e.target.value = "";
+            document.getElementById("fileName").textContent = "";
+            return;
+          }
+
+          // Clear any previous errors
+          hideError();
+
+          // Show filename
+          document.getElementById(
+            "fileName"
+          ).textContent = `Selected: ${file.name}`;
+
+          const arrayBuffer = await file.arrayBuffer();
+          const gif = parseGIF(arrayBuffer);
+          const frames = decompressFrames(gif, true); // get RGBA pixel data
+
+          const frameContainer = document.getElementById("frames");
+          frameContainer.innerHTML = ""; // clear previous
+
+          // Create a base canvas to build frames on
+          const baseCanvas = document.createElement("canvas");
+          baseCanvas.width = gif.lsd.width;
+          baseCanvas.height = gif.lsd.height;
+          const baseCtx = baseCanvas.getContext("2d");
+
+          frames.forEach((frame, index) => {
+            // Create a new canvas for this frame
+            const frameCanvas = document.createElement("canvas");
+            frameCanvas.width = gif.lsd.width;
+            frameCanvas.height = gif.lsd.height;
+            const frameCtx = frameCanvas.getContext("2d");
+
+            // Copy the previous state
+            frameCtx.drawImage(baseCanvas, 0, 0);
+
+            // Create ImageData from the frame's pixel data
+            const imageData = frameCtx.createImageData(
+              frame.dims.width,
+              frame.dims.height
+            );
+            imageData.data.set(frame.patch);
+
+            // Apply the frame data at the correct position
+            const tempCanvas = document.createElement("canvas");
+            tempCanvas.width = frame.dims.width;
+            tempCanvas.height = frame.dims.height;
+            const tempCtx = tempCanvas.getContext("2d");
+            tempCtx.putImageData(imageData, 0, 0);
+
+            // Draw the frame onto the main canvas at the correct position
+            frameCtx.drawImage(tempCanvas, frame.dims.left, frame.dims.top);
+
+            // Update the base canvas for the next frame
+            baseCtx.clearRect(0, 0, gif.lsd.width, gif.lsd.height);
+            baseCtx.drawImage(frameCanvas, 0, 0);
+
+            const img = document.createElement("img");
+            img.src = frameCanvas.toDataURL("image/png");
+            frameContainer.appendChild(img);
+          });
+
+          // Show print button after frames are loaded
+          document.getElementById("printBtn").style.display = "inline-block";
+          document.getElementById("printInstructions").style.display = "block";
+        });
+
+      // Add print functionality
+      document.getElementById("printBtn").addEventListener("click", () => {
+        window.print();
+      });
+
+      // Drag and drop functionality
+      const uploadSection = document.getElementById("uploadSection");
+      const gifInput = document.getElementById("gifInput");
+
+      // Prevent default drag behaviors
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        uploadSection.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+      });
+
+      // Highlight drop area when item is dragged over it
+      ["dragenter", "dragover"].forEach((eventName) => {
+        uploadSection.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        uploadSection.addEventListener(eventName, unhighlight, false);
+      });
+
+      // Handle dropped files
+      uploadSection.addEventListener("drop", handleDrop, false);
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      function highlight(e) {
+        uploadSection.classList.add("dragover");
+      }
+
+      function unhighlight(e) {
+        uploadSection.classList.remove("dragover");
+      }
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        if (files.length > 0) {
+          const file = files[0];
+
+          // Validate file type
+          if (!file.type.startsWith("image/gif")) {
+            showError(
+              "❌ Please drop a GIF file only. Other image formats are not supported."
+            );
+            return;
+          }
+
+          // Validate file size
+          if (file.size > 10 * 1024 * 1024) {
+            showError(
+              "❌ File is too large. Please drop a GIF file smaller than 10MB."
+            );
+            return;
+          }
+
+          gifInput.files = files;
+          gifInput.dispatchEvent(new Event("change"));
+        }
+      }
+
+      function showError(message) {
+        const errorMessageElement = document.getElementById("errorMessage");
+        errorMessageElement.textContent = message;
+        errorMessageElement.style.display = "block";
+      }
+
+      function hideError() {
+        const errorMessageElement = document.getElementById("errorMessage");
+        errorMessageElement.style.display = "none";
+      }
+    </script>
+  </body>
+</html>
