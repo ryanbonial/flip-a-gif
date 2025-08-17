@@ -1,5 +1,9 @@
 import { parseGIF, decompressFrames } from "gifuct-js";
 
+import { showError, hideError } from "./errorMessages.js";
+import "./termsAndConditions.js";
+import { preventDefaults } from "./utils.js";
+
 // File input change handler
 document.getElementById("gifInput").addEventListener("change", async (e) => {
   const file = e.target.files[0];
@@ -125,11 +129,6 @@ uploadSection.addEventListener("keydown", (e) => {
   }
 });
 
-function preventDefaults(e) {
-  e.preventDefault();
-  e.stopPropagation();
-}
-
 function highlight(e) {
   uploadSection.classList.add("dragover");
 }
@@ -165,41 +164,3 @@ function handleDrop(e) {
     gifInput.dispatchEvent(new Event("change"));
   }
 }
-
-function showError(message) {
-  const errorMessageElement = document.getElementById("errorMessage");
-  errorMessageElement.textContent = message;
-  errorMessageElement.style.display = "block";
-}
-
-function hideError() {
-  const errorMessageElement = document.getElementById("errorMessage");
-  errorMessageElement.style.display = "none";
-}
-
-// Terms and Conditions Modal
-const termsBtn = document.getElementById("termsBtn");
-const termsModal = document.getElementById("termsModal");
-const closeTerms = document.getElementById("closeTerms");
-
-termsBtn.addEventListener("click", () => {
-  termsModal.showModal();
-});
-
-closeTerms.addEventListener("click", () => {
-  termsModal.close();
-});
-
-// Close modal when clicking outside
-termsModal.addEventListener("click", (e) => {
-  if (e.target === termsModal) {
-    termsModal.close();
-  }
-});
-
-// Close modal with Escape key
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && termsModal.open) {
-    termsModal.close();
-  }
-});
