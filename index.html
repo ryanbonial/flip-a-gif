@@ -103,258 +103,7 @@
     </script>
 
     <title>GIF to Flipbook</title>
-    <style>
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
-        padding: 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        color: #333;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      }
-
-      h1 {
-        text-align: center;
-        color: #4a5568;
-        font-size: 2.5rem;
-        margin-bottom: 10px;
-        font-weight: 700;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      .subtitle {
-        text-align: center;
-        color: #718096;
-        font-size: 1.1rem;
-        margin-bottom: 30px;
-        font-style: italic;
-      }
-
-      .upload-section {
-        text-align: center;
-        margin-bottom: 30px;
-        padding: 30px;
-        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-        border-radius: 15px;
-        border: 2px dashed #cbd5e0;
-        transition: all 0.3s ease;
-        cursor: pointer;
-      }
-
-      .upload-section:hover {
-        border-color: #667eea;
-        background: linear-gradient(135deg, #f0f4ff 0%, #e6f3ff 100%);
-      }
-
-      .upload-section.dragover {
-        border-color: #667eea;
-        background: linear-gradient(135deg, #e6f3ff 0%, #d1e7ff 100%);
-        transform: scale(1.02);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
-      }
-
-      .upload-section .drag-text {
-        font-size: 1.1rem;
-        color: #718096;
-        margin-bottom: 20px;
-      }
-
-      .upload-section .drag-text strong {
-        color: #667eea;
-        font-weight: 600;
-      }
-
-      label {
-        display: block;
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #4a5568;
-        margin-bottom: 15px;
-      }
-
-      input[type="file"] {
-        display: none;
-      }
-
-      .file-input-wrapper {
-        position: relative;
-        display: inline-block;
-      }
-
-      .file-input-label {
-        display: inline-block;
-        padding: 15px 30px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 50px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-      }
-
-      .file-input-label:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-      }
-
-      .file-name {
-        margin-top: 15px;
-        font-size: 0.9rem;
-        color: #718096;
-        font-style: italic;
-      }
-
-      .error-message {
-        margin-top: 15px;
-        padding: 12px 20px;
-        background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
-        border: 1px solid #fc8181;
-        border-radius: 10px;
-        color: #c53030;
-        font-size: 0.9rem;
-        font-weight: 500;
-        text-align: center;
-        animation: slideIn 0.3s ease;
-      }
-
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* Accessibility improvements */
-      .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-      }
-
-      /* Focus indicators */
-      button:focus,
-      input:focus,
-      label:focus {
-        outline: 2px solid #667eea;
-        outline-offset: 2px;
-      }
-
-      /* Skip link for keyboard users */
-      .skip-link {
-        position: absolute;
-        top: -40px;
-        left: 6px;
-        background: #667eea;
-        color: white;
-        padding: 8px;
-        text-decoration: none;
-        border-radius: 4px;
-        z-index: 1000;
-      }
-
-      .skip-link:focus {
-        top: 6px;
-      }
-
-      #printBtn {
-        display: none;
-        margin: 20px auto;
-        padding: 15px 40px;
-        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-        color: white;
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
-      }
-
-      #printBtn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(72, 187, 120, 0.6);
-      }
-
-      #frames {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 0;
-        margin-left: 30px;
-      }
-
-      #frames img {
-        border: 1px dashed #999;
-        border-left: none;
-        border-bottom: none;
-        margin: 0;
-        padding-left: 30px;
-        width: 200px;
-        height: auto;
-        transition: transform 0.2s ease;
-      }
-
-      #frames img:hover {
-        transform: scale(1.02);
-      }
-
-      /* Print styles */
-      @media print {
-        body {
-          margin: 0;
-          padding: 0;
-          background: white;
-        }
-        .container {
-          box-shadow: none;
-          border-radius: 0;
-          padding: 0;
-        }
-        h1,
-        .subtitle,
-        .upload-section,
-        #printBtn,
-        div[style*="text-align: center"] {
-          display: none;
-        }
-        #frames {
-          margin-left: 30px;
-          gap: 0;
-        }
-        #frames img {
-          border: 1px dashed #999;
-          border-left: none;
-          border-bottom: none;
-          margin: 0;
-          padding-left: 30px;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <!-- Skip link for accessibility -->
@@ -402,44 +151,16 @@
           <div
             id="errorMessage"
             class="error-message"
-            style="display: none"
             role="alert"
             aria-live="assertive"
           ></div>
         </div>
 
-        <div style="text-align: center">
-          <button
-            id="printBtn"
-            style="
-              display: none;
-              margin: 20px auto;
-              padding: 15px 40px;
-              background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-              color: white;
-              border: none;
-              border-radius: 50px;
-              cursor: pointer;
-              font-weight: 600;
-              font-size: 1.1rem;
-              transition: all 0.3s ease;
-              box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
-            "
-            aria-describedby="printInstructions"
-          >
+        <div class="print-section">
+          <button id="printBtn" aria-describedby="printInstructions">
             🖨️ Print Flipbook
           </button>
-          <div
-            id="printInstructions"
-            style="
-              display: none;
-              margin-top: 15px;
-              font-size: 0.9rem;
-              color: #718096;
-              line-height: 1.4;
-            "
-            aria-live="polite"
-          >
+          <div id="printInstructions" aria-live="polite">
             💡 <strong>Printing Tips:</strong> Use landscape orientation and set
             margins to "None" for best results
           </div>
@@ -454,373 +175,71 @@
       </main>
     </div>
 
-    <!-- Footer -->
-    <footer
-      style="
-        text-align: center;
-        margin-top: 40px;
-        padding: 20px;
-        color: #718096;
-        font-size: 0.9rem;
-      "
-    >
+    <footer>
       <p>
-        <button
-          id="termsBtn"
-          style="
-            background: none;
-            border: none;
-            color: #2d3748;
-            text-decoration: underline;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-          "
-        >
-          Terms & Conditions
-        </button>
+        <button id="termsBtn">Terms & Conditions</button>
       </p>
     </footer>
 
-    <!-- Terms and Conditions Modal -->
-    <dialog
-      id="termsModal"
-      style="
-        border: none;
-        border-radius: 15px;
-        padding: 0;
-        max-width: 600px;
-        width: 90%;
-        max-height: 80vh;
-        background: white;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-      "
-    >
-      <div
-        style="
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          padding: 25px;
-          border-radius: 15px 15px 0 0;
-          position: relative;
-        "
-      >
-        <h2 style="margin: 0; font-size: 1.5rem; font-weight: 600">
-          Terms & Conditions
-        </h2>
-        <button
-          id="closeTerms"
-          style="
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          "
-        >
-          ×
-        </button>
+    <dialog id="termsModal">
+      <div class="modal-header">
+        <h2>Terms & Conditions</h2>
+        <button id="closeTerms">×</button>
       </div>
 
-      <div style="padding: 25px; max-height: 60vh; overflow-y: auto">
-        <div style="margin-bottom: 20px">
-          <p style="margin: 0 0 15px 0; line-height: 1.6; color: #4a5568">
-            <strong>Last updated:</strong> August 17, 2025
-          </p>
+      <div class="modal-content">
+        <div class="modal-body">
+          <p><strong>Last updated:</strong> August 17, 2025</p>
 
-          <p style="margin: 0 0 15px 0; line-height: 1.6; color: #4a5568">
+          <p>
             By using FlipAGif ("the Service"), you hereby agree to be a decent
             human being. This is not optional. We take this very seriously, even
             though we're just a flipbook maker.
           </p>
 
-          <h3 style="color: #2d3748; margin: 25px 0 15px 0">
-            1. Basic Human Decency Requirements
-          </h3>
-          <p style="margin: 0 0 15px 0; line-height: 1.6; color: #4a5568">
+          <h3>1. Basic Human Decency Requirements</h3>
+          <p>
             You agree to conduct yourself in a manner that does not make the
             world a worse place. This includes, but is not limited to:
           </p>
-          <ul style="margin: 0 0 15px 0; padding-left: 20px; color: #4a5568">
-            <li style="margin-bottom: 8px">
+          <ul>
+            <li>
               Being racist, sexist, xenophobic, homophobic, or transphobic
             </li>
-            <li style="margin-bottom: 8px">
-              Bullying, harassing, or intentionally harming others
-            </li>
-            <li style="margin-bottom: 8px">
-              Spreading misinformation or conspiracy theories
-            </li>
-            <li style="margin-bottom: 8px">
-              Being unnecessarily mean on the internet
-            </li>
-            <li style="margin-bottom: 8px">
-              Leaving your shopping cart in the middle of the parking lot
-            </li>
-            <li style="margin-bottom: 8px">
+            <li>Bullying, harassing, or intentionally harming others</li>
+            <li>Spreading misinformation or conspiracy theories</li>
+            <li>Being unnecessarily mean on the internet</li>
+            <li>Leaving your shopping cart in the middle of the parking lot</li>
+            <li>
               Not using your turn signal, and using the left lane as your
               personal hangout spot
             </li>
           </ul>
 
-          <h3 style="color: #2d3748; margin: 25px 0 15px 0">
-            2. Flipbook Creation Standards
-          </h3>
-          <p style="margin: 0 0 15px 0; line-height: 1.6; color: #4a5568">
-            While creating your flipbook, you agree to:
-          </p>
-          <ul style="margin: 0 0 15px 0; padding-left: 20px; color: #4a5568">
-            <li style="margin-bottom: 8px">
-              Not create flipbooks that promote violence
-            </li>
-            <li style="margin-bottom: 8px">
+          <h3>2. Flipbook Creation Standards</h3>
+          <p>While creating your flipbook, you agree to:</p>
+          <ul>
+            <li>Not create flipbooks that promote violence</li>
+            <li>
               Use appropriate content that won't traumatize children or pets
             </li>
-            <li style="margin-bottom: 8px">
-              Share your flipbook creations responsibly
-            </li>
+            <li>Share your flipbook creations responsibly</li>
           </ul>
 
-          <h3 style="color: #2d3748; margin: 25px 0 15px 0">
-            3. Service Limitations
-          </h3>
-          <p style="margin: 0 0 15px 0; line-height: 1.6; color: #4a5568">
+          <h3>3. Service Limitations</h3>
+          <p>
             This service is provided "as is" because this is just a site that
             makes flipbooks. We're not responsible for:
           </p>
-          <ul style="margin: 0 0 15px 0; padding-left: 20px; color: #4a5568">
-            <li style="margin-bottom: 8px">
-              Paper cuts from cutting your flipbook
-            </li>
-            <li style="margin-bottom: 8px">
-              Stapler injuries (please be careful)
-            </li>
-            <li style="margin-bottom: 8px">
-              Lost flipbooks (check under the couch)
-            </li>
+          <ul>
+            <li>Paper cuts from cutting your flipbook</li>
+            <li>Stapler injuries (please be careful)</li>
+            <li>Lost flipbooks (check under the couch)</li>
           </ul>
         </div>
       </div>
     </dialog>
 
-    <script type="module">
-      import { parseGIF, decompressFrames } from "gifuct-js";
-
-      document
-        .getElementById("gifInput")
-        .addEventListener("change", async (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-
-          // Validate file type
-          if (!file.type.startsWith("image/gif")) {
-            showError(
-              "❌ Please select a GIF file only. Other image formats are not supported."
-            );
-            e.target.value = ""; // Clear the input
-            document.getElementById("fileName").textContent = "";
-            return;
-          }
-
-          // Validate file size (optional - 10MB limit)
-          if (file.size > 10 * 1024 * 1024) {
-            showError(
-              "❌ File is too large. Please select a GIF file smaller than 10MB."
-            );
-            e.target.value = "";
-            document.getElementById("fileName").textContent = "";
-            return;
-          }
-
-          // Clear any previous errors
-          hideError();
-
-          // Show filename
-          document.getElementById(
-            "fileName"
-          ).textContent = `Selected: ${file.name}`;
-
-          const arrayBuffer = await file.arrayBuffer();
-          const gif = parseGIF(arrayBuffer);
-          const frames = decompressFrames(gif, true); // get RGBA pixel data
-
-          const frameContainer = document.getElementById("frames");
-          frameContainer.innerHTML = ""; // clear previous
-
-          // Create a base canvas to build frames on
-          const baseCanvas = document.createElement("canvas");
-          baseCanvas.width = gif.lsd.width;
-          baseCanvas.height = gif.lsd.height;
-          const baseCtx = baseCanvas.getContext("2d");
-
-          frames.forEach((frame, index) => {
-            // Create a new canvas for this frame
-            const frameCanvas = document.createElement("canvas");
-            frameCanvas.width = gif.lsd.width;
-            frameCanvas.height = gif.lsd.height;
-            const frameCtx = frameCanvas.getContext("2d");
-
-            // Copy the previous state
-            frameCtx.drawImage(baseCanvas, 0, 0);
-
-            // Create ImageData from the frame's pixel data
-            const imageData = frameCtx.createImageData(
-              frame.dims.width,
-              frame.dims.height
-            );
-            imageData.data.set(frame.patch);
-
-            // Apply the frame data at the correct position
-            const tempCanvas = document.createElement("canvas");
-            tempCanvas.width = frame.dims.width;
-            tempCanvas.height = frame.dims.height;
-            const tempCtx = tempCanvas.getContext("2d");
-            tempCtx.putImageData(imageData, 0, 0);
-
-            // Draw the frame onto the main canvas at the correct position
-            frameCtx.drawImage(tempCanvas, frame.dims.left, frame.dims.top);
-
-            // Update the base canvas for the next frame
-            baseCtx.clearRect(0, 0, gif.lsd.width, gif.lsd.height);
-            baseCtx.drawImage(frameCanvas, 0, 0);
-
-            const img = document.createElement("img");
-            img.src = frameCanvas.toDataURL("image/png");
-            img.alt = `Frame ${index + 1} of flipbook`;
-            img.setAttribute(
-              "aria-label",
-              `Frame ${index + 1} of flipbook - cut along dashed lines`
-            );
-            frameContainer.appendChild(img);
-          });
-
-          // Show print button after frames are loaded
-          document.getElementById("printBtn").style.display = "inline-block";
-          document.getElementById("printInstructions").style.display = "block";
-        });
-
-      // Add print functionality
-      document.getElementById("printBtn").addEventListener("click", () => {
-        window.print();
-      });
-
-      // Drag and drop functionality
-      const uploadSection = document.getElementById("uploadSection");
-      const gifInput = document.getElementById("gifInput");
-
-      // Prevent default drag behaviors
-      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-        uploadSection.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
-      });
-
-      // Highlight drop area when item is dragged over it
-      ["dragenter", "dragover"].forEach((eventName) => {
-        uploadSection.addEventListener(eventName, highlight, false);
-      });
-
-      ["dragleave", "drop"].forEach((eventName) => {
-        uploadSection.addEventListener(eventName, unhighlight, false);
-      });
-
-      // Handle dropped files
-      uploadSection.addEventListener("drop", handleDrop, false);
-
-      // Keyboard support for drag and drop area
-      uploadSection.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          gifInput.click();
-        }
-      });
-
-      function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
-      function highlight(e) {
-        uploadSection.classList.add("dragover");
-      }
-
-      function unhighlight(e) {
-        uploadSection.classList.remove("dragover");
-      }
-
-      function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-
-        if (files.length > 0) {
-          const file = files[0];
-
-          // Validate file type
-          if (!file.type.startsWith("image/gif")) {
-            showError(
-              "❌ Please drop a GIF file only. Other image formats are not supported."
-            );
-            return;
-          }
-
-          // Validate file size
-          if (file.size > 10 * 1024 * 1024) {
-            showError(
-              "❌ File is too large. Please drop a GIF file smaller than 10MB."
-            );
-            return;
-          }
-
-          gifInput.files = files;
-          gifInput.dispatchEvent(new Event("change"));
-        }
-      }
-
-      function showError(message) {
-        const errorMessageElement = document.getElementById("errorMessage");
-        errorMessageElement.textContent = message;
-        errorMessageElement.style.display = "block";
-      }
-
-      function hideError() {
-        const errorMessageElement = document.getElementById("errorMessage");
-        errorMessageElement.style.display = "none";
-      }
-
-      // Terms and Conditions Modal
-      const termsBtn = document.getElementById("termsBtn");
-      const termsModal = document.getElementById("termsModal");
-      const closeTerms = document.getElementById("closeTerms");
-
-      termsBtn.addEventListener("click", () => {
-        termsModal.showModal();
-      });
-
-      closeTerms.addEventListener("click", () => {
-        termsModal.close();
-      });
-
-      // Close modal when clicking outside
-      termsModal.addEventListener("click", (e) => {
-        if (e.target === termsModal) {
-          termsModal.close();
-        }
-      });
-
-      // Close modal with Escape key
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && termsModal.open) {
-          termsModal.close();
-        }
-      });
-    </script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
