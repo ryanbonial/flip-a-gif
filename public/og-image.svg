@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f7fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#edf2f7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <!-- Main title -->
+  <text x="600" y="180" font-family="Arial, sans-serif" font-size="72" font-weight="bold" text-anchor="middle" fill="white">
+    🎬 GIF to Flipbook
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="250" font-family="Arial, sans-serif" font-size="36" text-anchor="middle" fill="white" opacity="0.9">
+    Transform GIFs into Printable Flipbooks
+  </text>
+
+  <!-- Feature cards -->
+  <!-- Card 1 -->
+  <rect x="150" y="320" width="250" height="200" fill="url(#cardGrad)" rx="20" ry="20" stroke="white" stroke-width="3"/>
+  <text x="275" y="380" font-family="Arial, sans-serif" font-size="48" text-anchor="middle" fill="#4a5568">📁</text>
+  <text x="275" y="420" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#4a5568">Drag &amp; Drop</text>
+  <text x="275" y="450" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#718096">Easy GIF upload</text>
+
+  <!-- Card 2 -->
+  <rect x="475" y="320" width="250" height="200" fill="url(#cardGrad)" rx="20" ry="20" stroke="white" stroke-width="3"/>
+  <text x="600" y="380" font-family="Arial, sans-serif" font-size="48" text-anchor="middle" fill="#4a5568">✂️</text>
+  <text x="600" y="420" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#4a5568">Cutting Guides</text>
+  <text x="600" y="450" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#718096">Perfect cuts</text>
+
+  <!-- Card 3 -->
+  <rect x="800" y="320" width="250" height="200" fill="url(#cardGrad)" rx="20" ry="20" stroke="white" stroke-width="3"/>
+  <text x="925" y="380" font-family="Arial, sans-serif" font-size="48" text-anchor="middle" fill="#4a5568">🖨️</text>
+  <text x="925" y="420" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#4a5568">Print Ready</text>
+  <text x="925" y="450" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#718096">Optimized layout</text>
+
+  <!-- Bottom text -->
+  <text x="600" y="580" font-family="Arial, sans-serif" font-size="28" text-anchor="middle" fill="white" opacity="0.8">
+    Free Online Tool &amp; No Registration Required
+  </text>
+</svg>
