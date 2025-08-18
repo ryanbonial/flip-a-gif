@@ -37,6 +37,32 @@ h1 {
   font-style: italic;
 }
 
+.example-gifs {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.example-gifs-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.example-gifs-container img {
+  max-width: 250px;
+  height: auto;
+  margin: 10px;
+  border-radius: 10px;
+}
+
+.arrow {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #667eea;
+  align-self: center;
+}
+
 .upload-section {
   text-align: center;
   margin-bottom: 30px;
