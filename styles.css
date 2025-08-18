@@ -383,11 +383,14 @@ footer {
   .upload-section,
   #printBtn,
   .print-section,
-  .example-gifs {
+  .example-gifs,
+  footer {
     display: none;
   }
-  #frames {
-    margin-left: 30px;
+  #frames {  
+    grid-template-columns: repeat(auto-fit, 200px);
+    gap: 0;  
+    margin-left: 0;
     gap: 0;
   }
   #frames img {
