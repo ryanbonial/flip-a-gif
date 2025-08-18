@@ -382,7 +382,8 @@ footer {
   .subtitle,
   .upload-section,
   #printBtn,
-  .print-section {
+  .print-section,
+  .example-gifs {
     display: none;
   }
   #frames {
