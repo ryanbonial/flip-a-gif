@@ -387,9 +387,9 @@ footer {
   footer {
     display: none;
   }
-  #frames {  
+  #frames {
     grid-template-columns: repeat(auto-fit, 200px);
-    gap: 0;  
+    gap: 0;
     margin-left: 0;
     gap: 0;
   }

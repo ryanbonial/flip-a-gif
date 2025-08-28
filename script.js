@@ -1,30 +1,30 @@
 import { parseGIF, decompressFrames } from "gifuct-js";
 
-// File input change handler
-document.getElementById("gifInput").addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
+// File validation function
+function validateGifFile(file) {
   // Validate file type
   if (!file.type.startsWith("image/gif")) {
-    showError(
-      "❌ Please select a GIF file only. Other image formats are not supported."
-    );
-    e.target.value = ""; // Clear the input
-    document.getElementById("fileName").textContent = "";
-    return;
+    return {
+      isValid: false,
+      error:
+        "❌ Please select a GIF file only. Other image formats are not supported.",
+    };
   }
 
-  // Validate file size (optional - 10MB limit)
+  // Validate file size (10MB limit)
   if (file.size > 10 * 1024 * 1024) {
-    showError(
-      "❌ File is too large. Please select a GIF file smaller than 10MB."
-    );
-    e.target.value = "";
-    document.getElementById("fileName").textContent = "";
-    return;
+    return {
+      isValid: false,
+      error:
+        "❌ File is too large. Please select a GIF file smaller than 10MB.",
+    };
   }
 
+  return { isValid: true };
+}
+
+// Process GIF file function
+async function processGifFile(file) {
   // Clear any previous errors
   hideError();
 
@@ -88,6 +88,22 @@ document.getElementById("gifInput").addEventListener("change", async (e) => {
   // Show print button after frames are loaded
   document.getElementById("printBtn").style.display = "inline-block";
   document.getElementById("printInstructions").style.display = "block";
+}
+
+// File input change handler
+document.getElementById("gifInput").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const validation = validateGifFile(file);
+  if (!validation.isValid) {
+    showError(validation.error);
+    e.target.value = ""; // Clear the input
+    document.getElementById("fileName").textContent = "";
+    return;
+  }
+
+  await processGifFile(file);
 });
 
 // Add print functionality
@@ -117,6 +133,20 @@ const gifInput = document.getElementById("gifInput");
 // Handle dropped files
 uploadSection.addEventListener("drop", handleDrop, false);
 
+// Make example GIFs draggable
+document.addEventListener("DOMContentLoaded", () => {
+  const exampleGifs = document.querySelectorAll(".example-gifs img");
+  exampleGifs.forEach((img) => {
+    img.draggable = true;
+    img.addEventListener("dragstart", (e) => {
+      // Set drag data to help with Chrome compatibility
+      e.dataTransfer.setData("text/plain", img.src);
+      e.dataTransfer.setData("text/uri-list", img.src);
+      e.dataTransfer.effectAllowed = "copy";
+    });
+  });
+});
+
 // Keyboard support for drag and drop area
 uploadSection.addEventListener("keydown", (e) => {
   if (e.key === "Enter" || e.key === " ") {
@@ -142,28 +172,90 @@ function handleDrop(e) {
   const dt = e.dataTransfer;
   const files = dt.files;
 
+  // Handle file drops
   if (files.length > 0) {
     const file = files[0];
+    const validation = validateGifFile(file);
 
-    // Validate file type
-    if (!file.type.startsWith("image/gif")) {
-      showError(
-        "❌ Please drop a GIF file only. Other image formats are not supported."
-      );
-      return;
-    }
-
-    // Validate file size
-    if (file.size > 10 * 1024 * 1024) {
-      showError(
-        "❌ File is too large. Please drop a GIF file smaller than 10MB."
-      );
+    if (!validation.isValid) {
+      showError(validation.error);
       return;
     }
 
     gifInput.files = files;
     gifInput.dispatchEvent(new Event("change"));
+    return;
   }
+
+  // Handle image drops from the page (for Chrome compatibility)
+  const items = dt.items;
+  if (items) {
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+
+      // Check if it's an image
+      if (item.type.startsWith("image/")) {
+        // Get the file from the item
+        const file = item.getAsFile();
+        if (file) {
+          const validation = validateGifFile(file);
+
+          if (!validation.isValid) {
+            showError(validation.error);
+            return;
+          }
+
+          // Create a DataTransfer object to set the files
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          gifInput.files = dataTransfer.files;
+          gifInput.dispatchEvent(new Event("change"));
+          return;
+        }
+      }
+
+      // Check if it's a URL (for images dragged from the page)
+      if (item.type === "text/uri-list" || item.type === "text/plain") {
+        item.getAsString((url) => {
+          if (url && url.endsWith(".gif")) {
+            // Fetch the GIF from the URL
+            fetch(url)
+              .then((response) => response.blob())
+              .then((blob) => {
+                // Create a file object from the blob
+                const file = new File([blob], "dragon-dropped.gif", {
+                  type: "image/gif",
+                });
+
+                const validation = validateGifFile(file);
+                if (!validation.isValid) {
+                  showError(validation.error);
+                  return;
+                }
+
+                // Create a DataTransfer object to set the files
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                gifInput.files = dataTransfer.files;
+                gifInput.dispatchEvent(new Event("change"));
+              })
+              .catch((error) => {
+                console.error("Error fetching GIF:", error);
+                showError("❌ Error loading the GIF file. Please try again.");
+              });
+          } else {
+            showError(
+              "❌ Please drop a GIF file only. Other image formats are not supported."
+            );
+          }
+        });
+        return;
+      }
+    }
+  }
+
+  // If we get here, no valid file was dropped
+  showError("❌ Please drop a valid GIF file.");
 }
 
 function showError(message) {
