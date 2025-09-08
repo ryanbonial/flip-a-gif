@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://flip-a-gif.netlify.app/sitemap.xml
+Sitemap: https://flipagif.com/sitemap.xml
 
 # Crawl-delay
 Crawl-delay: 1

@@ -1,0 +1,16 @@
+[build]
+command = "npm run build"
+publish = "dist"
+
+[[redirects]]
+from = "/"
+to = "https://flipagif.com/"
+status = 301
+force = true
+conditions = { Host = ["flip-a-gif.netlify.app"] }
+
+[[redirects]]
+from = "http://flipagif.com/*"
+to = "https://flipagif.com/:splat"
+status = 301
+force = true
