@@ -2,15 +2,16 @@
 command = "npm run build"
 publish = "dist"
 
-[[redirects]]
-from = "/"
-to = "https://flipagif.com/"
-status = 301
-force = true
-conditions = { Host = ["flip-a-gif.netlify.app"] }
-
+# Redirect HTTP to HTTPS for custom domain
 [[redirects]]
 from = "http://flipagif.com/*"
+to = "https://flipagif.com/:splat"
+status = 301
+force = true
+
+# Ensure www redirects to non-www
+[[redirects]]
+from = "https://www.flipagif.com/*"
 to = "https://flipagif.com/:splat"
 status = 301
 force = true
